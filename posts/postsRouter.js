@@ -41,4 +41,10 @@ router.put('/:id', (req, res) => {
   }
 })
 
+router.delete('/:id', (req, res) => {
+  postDb.remove(req.params.id)
+    .then(count => count > 0 ? res.status(200).json({message: `You successfully deleted ${count} post`}) : res.status(404).json({errorMessage: 'The post you tried to delete could not be found'}))
+    .catch(err => res.status(500).json({errorMessage: `Could not delete post id:${req.params.id} at this time`, error: err}))
+})
+
 module.exports = router;
