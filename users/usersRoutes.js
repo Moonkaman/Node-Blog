@@ -4,13 +4,18 @@ const userDb = require('../data/helpers/userDb');
 
 const router = express.Router();
 
+function capitalizeName(req, res, next) {
+  req.body.name = req.body.name.charAt(0).toUpperCase() + req.body.name.slice(1);
+  next();
+}
+
 router.get('/', (req, res) => {
   userDb.get()
     .then(users => res.status(200).json(users))
     .catch(err => res.status(500).json({errorMessage: 'Could not retrieve users at this time.', error: err}));
 });
 
-router.post('/', (req, res) => {
+router.post('/', capitalizeName, (req, res) => {
   if(!req.body.name) {
     res.status(400).json({errorMessage: 'Please provide a name'});
   } else {
@@ -32,7 +37,7 @@ router.delete('/:id', (req, res) => {
     .catch(err => res.status(500).json({errorMessage: `Could not delete user id:${req.params.id} at this time.`, error: err}));
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id', capitalizeName, (req, res) => {
   if(!req.body.name) {
     res.status(400).json({errorMessage: 'Please provide a name'});
   } else {
