@@ -21,6 +21,12 @@ router.post('/', (req, res) => {
   }
 })
 
+router.delete('/:id', (req, res) => {
+  userDb.remove(req.params.id)
+    .then(count => count < 1 ? res.status(404).json({errorMessage: 'The user you tried to delete could not be found'}) : res.status(200).json({message: `You successfully deleted ${count} user`}))
+    .catch(err => res.status(500).json({errorMessage: `Could not delete user id:${req.params.id} at this time.`, error: err}));
+})
+
 router.get('/:id', (req, res) => {
   userDb.getById(req.params.id)
     .then(user => user ? res.status(200).json(user) : res.status(404).json({errorMessage: `User id:${req.params.id} not found`}))
