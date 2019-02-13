@@ -10,4 +10,20 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({errorMessage: 'Could not retrieve posts at this time', error: err}));
 })
 
+router.post('/', (req, res) => {
+  if(!req.body.text || !req.body.user_id) {
+    res.status(400).json({errorMessage: 'Please provide the text field and a valid user id'});
+  } else {
+  postDb.insert(req.body)
+    .then(newPost => res.status(201).json(newPost))
+    .catch(err => res.status(500).json({errorMessage: 'Could not create a post at this time', error: err}));
+  }
+})
+
+router.get('/:id', (req, res) => {
+  postDb.getById(req.params.id)
+    .then(post => post ? res.status(200).json(post) : res.status(404).json({errorMessage: `Post Id:${req.params.id} could not be found`}))
+    .catch(err => res.status(500).json({errorMessage: `Could not retrieve post id:${req.params.id} at this time`, error: err}));
+})
+
 module.exports = router;
