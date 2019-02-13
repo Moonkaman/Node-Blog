@@ -43,5 +43,11 @@ router.put('/:id', (req, res) => {
   }
 });
 
+router.get('/:id/posts', (req, res) => {
+  userDb.getUserPosts(req.params.id)
+    .then(posts => posts.length !== 0 ? res.status(200).json(posts) : res.status(404).json({errorMessage: `User id:${req.params.id} could not be found`}))
+    .catch(err => res.status(500).json({errorMessage: `Could not retrieve user id:${req.params.id}s posts at this time.`, error: err}));
+})
+
 module.exports = router;
 
